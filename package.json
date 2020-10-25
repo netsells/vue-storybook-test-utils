@@ -1,0 +1,22 @@
+{
+    "name": "@netsells/vue-storybook-test-utils",
+    "version": "0.1.0",
+    "main": "index.js",
+    "license": "MIT",
+    "dependencies": {
+        "@vue/server-test-utils": "^1.1.0",
+        "@vue/test-utils": "^1.1.0",
+        "lodash.merge": "^4.6.2"
+    },
+    "devDependencies": {
+        "@netsells/eslint-config": "^4.0.0"
+    },
+    "repository": {
+        "url": "https://github.com/netsells/vue-storybook-test-utils"
+    },
+    "author": {
+        "name": "Sam Turrell",
+        "url": "https://samturrell.co.uk",
+        "email": "sam.turrell@netsells.co.uk"
+    }
+}
