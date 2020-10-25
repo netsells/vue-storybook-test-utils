@@ -1,5 +1,5 @@
 const { render: vRender } = require('@vue/server-test-utils');
-const { mount: vMount, shallowMount: vShallowMount, createLocalVue } = require('@vue/test-utils');
+const { mount: vMount, shallowMount: vShallowMount, createLocalVue, ...rest } = require('@vue/test-utils');
 const merge = require('lodash.merge');
 
 /**
@@ -143,4 +143,5 @@ module.exports = {
     render,
     mount,
     shallowMount,
+    ...rest,
 };
