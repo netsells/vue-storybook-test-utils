@@ -1,6 +1,6 @@
-import { render as vRender } from '@vue/server-test-utils';
-import { mount as vMount, shallowMount as vShallowMount, createLocalVue } from '@vue/test-utils';
-import merge from 'lodash.merge';
+const { render: vRender } = require('@vue/server-test-utils');
+const { mount: vMount, shallowMount: vShallowMount, createLocalVue } = require('@vue/test-utils');
+const merge = require('lodash.merge');
 
 /**
  * Generate a local vue instance for testing environment.
@@ -26,7 +26,7 @@ const makeLocalVue = (callback = undefined) => {
  *
  * @returns {object}
  */
-export const generateStory = (story) => story(story.args, {
+const generateStory = (story) => story(story.args, {
     argTypes: story.args,
 });
 
@@ -69,7 +69,7 @@ const generateConfigForStory = (story, options) => merge(generateConfig(options)
  *
  * @returns {Promise<Cheerio>}
  */
-export const renderStory = (story, config = {}) => {
+const renderStory = (story, config = {}) => {
     return vRender(generateStory(story), generateConfigForStory(story, config));
 };
 
@@ -81,7 +81,7 @@ export const renderStory = (story, config = {}) => {
  *
  * @returns {Promise<Cheerio>}
  */
-export const mountStory = (story, config = {}) => {
+const mountStory = (story, config = {}) => {
     return vMount(generateStory(story), generateConfigForStory(story, config));
 };
 
@@ -95,7 +95,7 @@ export const mountStory = (story, config = {}) => {
  *
  * @returns {Promise<Cheerio>}
  */
-export const shallowMountStory = (story, config = {}) => {
+const shallowMountStory = (story, config = {}) => {
     return vShallowMount(generateStory(story), generateConfigForStory(story, config));
 };
 
@@ -107,7 +107,7 @@ export const shallowMountStory = (story, config = {}) => {
  *
  * @returns {Promise<Cheerio>}
  */
-export const render = (component, config = {}) => {
+const render = (component, config = {}) => {
     return vRender(component, generateConfig(config));
 };
 
@@ -119,7 +119,7 @@ export const render = (component, config = {}) => {
  *
  * @returns {Promise<Cheerio>}
  */
-export const mount = (component, config = {}) => {
+const mount = (component, config = {}) => {
     return vMount(component, generateConfig(config));
 };
 
@@ -131,6 +131,16 @@ export const mount = (component, config = {}) => {
  *
  * @returns {Promise<Cheerio>}
  */
-export const shallowMount = (component, config = {}) => {
+const shallowMount = (component, config = {}) => {
     return vShallowMount(component, generateConfig(config));
+};
+
+module.exports = {
+    generateStory,
+    renderStory,
+    mountStory,
+    shallowMountStory,
+    render,
+    mount,
+    shallowMount,
 };
