@@ -1,5 +1,7 @@
-const { render: vRender } = require('@vue/server-test-utils');
-const { mount: vMount, shallowMount: vShallowMount, createLocalVue, config, ...rest } = require('@vue/test-utils');
+const { render: rawRender } = require('@vue/server-test-utils');
+const { mount: rawMount, shallowMount: rawShallowMount, createLocalVue, config, ...rest } = require('@vue/test-utils');
+const Vue = require('vue');
+const Vuex = require('vuex');
 const merge = require('lodash.merge');
 
 /**
@@ -70,7 +72,7 @@ const generateConfigForStory = (story, options) => merge(generateConfig(options)
  * @returns {Promise<Cheerio>}
  */
 const renderStory = (story, config = {}) => {
-    return vRender(generateStory(story), generateConfigForStory(story, config));
+    return rawRender(generateStory(story), generateConfigForStory(story, config));
 };
 
 /**
@@ -82,7 +84,7 @@ const renderStory = (story, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const mountStory = (story, config = {}) => {
-    return vMount(generateStory(story), generateConfigForStory(story, config));
+    return rawMount(generateStory(story), generateConfigForStory(story, config));
 };
 
 /**
@@ -96,7 +98,7 @@ const mountStory = (story, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const shallowMountStory = (story, config = {}) => {
-    return vShallowMount(generateStory(story), generateConfigForStory(story, config));
+    return rawShallowMount(generateStory(story), generateConfigForStory(story, config));
 };
 
 /**
@@ -108,7 +110,7 @@ const shallowMountStory = (story, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const render = (component, config = {}) => {
-    return vRender(component, generateConfig(config));
+    return rawRender(component, generateConfig(config));
 };
 
 /**
@@ -120,7 +122,7 @@ const render = (component, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const mount = (component, config = {}) => {
-    return vMount(component, generateConfig(config));
+    return rawMount(component, generateConfig(config));
 };
 
 /**
@@ -132,7 +134,7 @@ const mount = (component, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const shallowMount = (component, config = {}) => {
-    return vShallowMount(component, generateConfig(config));
+    return rawShallowMount(component, generateConfig(config));
 };
 
 /**
@@ -160,8 +162,98 @@ const setStubs = (stubs = {}) => merge(config.stubs, stubs);
  */
 const setMocks = (mocks = {}) => merge(config.mocks, mocks);
 
+/**
+ * Mock vue directives.
+ *
+ * @param {object} directives
+ */
+const mockDirectives = (directives = {}) => {
+    Object.entries(directives).forEach(([name, value]) => {
+        Vue.directive(name, value === true ? {} : value);
+    });
+};
+
+/**
+ * Mock vue components.
+ *
+ * @param {object} components
+ */
+const mockComponents = (components = {}) => {
+    Object.entries(components).forEach(([name, value]) => {
+        Vue.component(name, value === true ? {} : value);
+    });
+};
+
+/**
+ * Setup Vue plugins
+ *
+ * @param {Array} plugins
+ */
+const setupPlugins = (plugins = []) => plugins.forEach((plugin) => Vue.use(plugin));
+
+/**
+ * Mock the vuex store.
+ *
+ * @param {object} config
+ */
+const mockStore = (config = {}) => {
+    setupPlugins([Vuex]);
+
+    const store = new Vuex.Store(config);
+
+    Vue.mixin({ store });
+};
+
+/**
+ * Generate a testing factory for a single story.
+ *
+ * @param {object} suite
+ * @param {object} story
+ *
+ * @returns {function}
+ */
+const generateStoryFactory = (suite, story) => {
+    story.args = merge({}, suite.default.args, story.args);
+    story.argTypes = merge({}, suite.default.argTypes, story.argTypes);
+
+    const storyFactory = (config = {}) => mountStory(story, config);
+
+    storyFactory.mountStory = storyFactory.bind({});
+    storyFactory.renderStory = (config = {}) => renderStory(story, config);
+    storyFactory.shallowMountStory = (config = {}) => renderStory(story, config);
+    storyFactory.story = story;
+
+    return storyFactory;
+}
+
+/**
+ * Generate the test suite for a story suite.
+ *
+ * @param {object} suite
+ *
+ * @returns {{}}
+ */
+const generateSuite = (suite) => {
+    const suiteObject = {};
+
+    const defaultFactory = (config = {}) => mount(suite.default.component, merge({
+        propsData: suite.default.args || {},
+    }, config));
+
+    defaultFactory.mount = defaultFactory.bind({});
+    suiteObject.component = defaultFactory;
+
+    Object.entries(suite)
+        .filter(([name]) => name !== 'default')
+        .forEach(([name, story]) => {
+            suiteObject[name] = generateStoryFactory(suite, story);
+        });
+
+    return suiteObject;
+};
+
 module.exports = {
-    generateStory,
+    generateSuite,
     renderStory,
     mountStory,
     shallowMountStory,
@@ -171,6 +263,13 @@ module.exports = {
     waitForAnimationFrame,
     setStubs,
     setMocks,
+    mockDirectives,
+    mockComponents,
+    mockStore,
+    setupPlugins,
+    rawMount,
+    rawRender,
+    rawShallowMount,
     config,
     ...rest,
 };
