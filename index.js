@@ -135,6 +135,13 @@ const shallowMount = (component, config = {}) => {
     return vShallowMount(component, generateConfig(config));
 };
 
+/**
+ * Wait for any animations to complete.
+ *
+ * @returns {Promise<unknown>}
+ */
+export const waitForAnimationFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+
 module.exports = {
     generateStory,
     renderStory,
