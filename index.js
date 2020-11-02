@@ -140,7 +140,7 @@ const shallowMount = (component, config = {}) => {
  *
  * @returns {Promise<unknown>}
  */
-export const waitForAnimationFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+const waitForAnimationFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
 module.exports = {
     generateStory,
@@ -150,5 +150,6 @@ module.exports = {
     render,
     mount,
     shallowMount,
+    waitForAnimationFrame,
     ...rest,
 };
