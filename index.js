@@ -205,10 +205,31 @@ const mockStore = (config = {}) => {
 };
 
 /**
+ * Generate the test factory for the suite component.
+ *
+ * @param {object} suite
+ *
+ * @returns {function(*=): Promise<Cheerio>}
+ */
+const generateComponentFactory = (suite) => {
+    const defaultFactoryConfig = {
+        propsData: suite.default.args || {},
+    };
+
+    const defaultFactory = (config = {}) => mount(suite.default.component, merge({}, defaultFactoryConfig, config));
+
+    defaultFactory.mount = defaultFactory.bind({});
+    defaultFactory.shallowMount = (config = {}) => shallowMount(suite.default.component, merge({}, defaultFactoryConfig, config));
+    defaultFactory.render = (config = {}) => render(suite.default.component, merge({}, defaultFactoryConfig, config));
+
+    return defaultFactory;
+}
+
+/**
  * Generate a testing factory for a single story.
  *
  * @param {object} suite
- * @param {object} story
+ * @param {function} story
  *
  * @returns {function}
  */
@@ -236,12 +257,7 @@ const generateStoryFactory = (suite, story) => {
 const generateSuite = (suite) => {
     const suiteObject = {};
 
-    const defaultFactory = (config = {}) => mount(suite.default.component, merge({
-        propsData: suite.default.args || {},
-    }, config));
-
-    defaultFactory.mount = defaultFactory.bind({});
-    suiteObject.component = defaultFactory;
+    suiteObject.component = generateComponentFactory(suite);
 
     Object.entries(suite)
         .filter(([name]) => name !== 'default')
