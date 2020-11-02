@@ -1,5 +1,5 @@
 const { render: vRender } = require('@vue/server-test-utils');
-const { mount: vMount, shallowMount: vShallowMount, createLocalVue, ...rest } = require('@vue/test-utils');
+const { mount: vMount, shallowMount: vShallowMount, createLocalVue, config, ...rest } = require('@vue/test-utils');
 const merge = require('lodash.merge');
 
 /**
@@ -142,6 +142,24 @@ const shallowMount = (component, config = {}) => {
  */
 const waitForAnimationFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
+/**
+ * Set global stubs within the test utils package.
+ *
+ * @param {object} stubs
+ *
+ * @returns {object}
+ */
+const setStubs = (stubs = {}) => merge(config.stubs, stubs);
+
+/**
+ * Set global mocks within the test utils package.
+ *
+ * @param {object} mocks
+ *
+ * @returns {object}
+ */
+const setMocks = (mocks = {}) => merge(config.mocks, mocks);
+
 module.exports = {
     generateStory,
     renderStory,
@@ -151,5 +169,8 @@ module.exports = {
     mount,
     shallowMount,
     waitForAnimationFrame,
+    setStubs,
+    setMocks,
+    config,
     ...rest,
 };
