@@ -39,12 +39,12 @@ const generateStory = (story) => story(story.args, {
  *
  * @returns {object}
  */
-const generateConfig = (config) => merge({
+const generateConfig = ({ localVue, ...config }) => merge({
     stubs: {
         icon: true,
         'nuxt-link': true,
     },
-    localVue: makeLocalVue(),
+    localVue: makeLocalVue(localVue),
 }, config);
 
 /**
@@ -55,12 +55,12 @@ const generateConfig = (config) => merge({
  *
  * @returns {object}
  */
-const generateConfigForStory = (story, options) => merge(generateConfig(options), {
+const generateConfigForStory = (story, { localVue, ...options }) => merge(generateConfig(options), {
     propsData: {
         ...story.args,
         ...options.propsData,
     },
-    localVue: makeLocalVue(options.localVue),
+    localVue: makeLocalVue(localVue),
 });
 
 /**
