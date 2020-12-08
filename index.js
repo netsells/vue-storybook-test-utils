@@ -257,6 +257,9 @@ const generateStoryFactory = (suite, story) => {
 const generateSuite = (suite) => {
     const suiteObject = {};
 
+    suiteObject._component = suite.default.component;
+    suiteObject._defaultExport = suite.default;
+
     suiteObject.component = generateComponentFactory(suite);
 
     Object.entries(suite)

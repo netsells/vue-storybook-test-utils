@@ -175,6 +175,27 @@ describe('TextInput', () => {
 });
 ```
 
+##### Component Access
+
+You can access the component import itself via `suite.utils.component`. This may be helpful if you have a dynamic test suite that needs to find the component within the story, e.g.:
+
+```js
+describe('when the input is updated', () => {
+    test('the new value is emitted', async () => {
+        const wrapper = suite.textInput();
+        const component = wrapper.findComponent(suite.utils.component);
+        const input = wrapper.find('input');
+
+        await input.setValue('New value');
+
+        expect(component.emitted('input').length).toBe(1);
+        expect(wrapper.vm.val).toBe('New value');
+    });
+});
+```
+
+##### 
+
 #### `localVue`
 
 Unlike the `localVue` property available on `@vue/test-utils`, you should provide a callback rather than an instance of your own. This reduces manual boilerplate and makes it more familiar to set up. The first argument of the callback is a Vue instance localised to your test. You should use this to setup any Vuex modules you may require in your tests.
