@@ -194,7 +194,7 @@ describe('when the input is updated', () => {
 });
 ```
 
-##### 
+Similarly, the entire `default` export of your story is available as `suite.utils.defaultExport` if required.
 
 #### `localVue`
 
