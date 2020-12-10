@@ -29,7 +29,10 @@ const makeLocalVue = (callback = undefined) => {
  * @returns {object}
  */
 const generateStory = (story) => story(story.args, {
-    argTypes: story.args,
+    argTypes: {
+        ...story.argTypes,
+        ...story.args,
+    },
 });
 
 /**
