@@ -4,6 +4,8 @@ const Vue = require('vue');
 const Vuex = require('vuex');
 const merge = require('lodash.merge');
 
+let store;
+
 /**
  * Generate a local vue instance for testing environment.
  *
@@ -47,6 +49,7 @@ const generateConfig = ({ localVue, ...config }) => merge({
         icon: true,
         'nuxt-link': true,
     },
+    store,
     localVue: makeLocalVue(localVue),
 }, config);
 
@@ -202,9 +205,7 @@ const setupPlugins = (plugins = []) => plugins.forEach((plugin) => Vue.use(plugi
 const mockStore = (config = {}) => {
     setupPlugins([Vuex]);
 
-    const store = new Vuex.Store(config);
-
-    Vue.mixin({ store });
+    store = new Vuex.Store(config);
 };
 
 /**
