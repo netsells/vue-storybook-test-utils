@@ -18,5 +18,10 @@
         "name": "Sam Turrell",
         "url": "https://samturrell.co.uk",
         "email": "sam.turrell@netsells.co.uk"
-    }
+    },
+    "files": [
+        "index.js",
+        "nuxt/",
+        "directives/"
+    ]
 }

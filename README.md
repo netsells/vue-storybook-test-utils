@@ -175,6 +175,67 @@ describe('TextInput', () => {
 });
 ```
 
+##### TestId
+
+Sometimes it's helpful to add a specific attribute to your tests to quickly and easily access your testable elements, without having to rely on specific markup. For this we recommend adding a `data-testid="someKey"` to your testable elements, and using the `findByTestId` helper. For example:
+
+```vue
+<ul>
+    <li>Some item I don't want to test</li>
+    <li data-testid="testableListItem">My testable element</li>
+    <li>Another item I don't want to test</li>
+</ul>
+```
+
+In the above example, previously you might do something like:
+
+```js
+const listItem = wrapper.findAll('li').at(1);
+```
+
+The problem here, is that if you later add another list item above this, your test will fail, even though the content of the `li` may be correct.
+
+With the introduction of the `data-testid` attribute we're able to avoid this problem by strictly fetching the item we need, e.g.:
+
+```js
+const listItem = wrapper.find('[data-testid="testableListItem"]');
+```
+
+This is a bit awkward to type out, so we can instead use the provided helper:
+
+```js
+const listItem = wrapper.findByTestId('testableListItem');
+```
+
+You can also use the `findAllByTestId` method for finding multiple testIds.
+
+For further reading on this method, check out this [article by Kent C. Dodds](https://kentcdodds.com/blog/making-your-ui-tests-resilient-to-change).
+
+To make this easier in your template, you can also make use of the provided `v-test` directive. Simply pull in and register the directive like so: 
+
+```js
+// setup.js
+import test from '@netsells/vue-storybook-test-utils/directives/test'
+
+mockDirectives({
+    test,
+});
+```
+
+Once pulled in, this directive can be used like so:
+
+```vue
+<ul>
+    <li>Some item I don't want to test</li>
+    <li v-test:testableListItem>My testable element</li>
+    <li>Another item I don't want to test</li>
+</ul>
+```
+
+There is also a simple nuxt module to prevent this method erroring in production. Simply add `'@netsells/vue-storybook-test-utils/nuxt'` to your `buildModules` section.
+
+These data attributes will only render in test environments, i.e. in jest and storybook.
+
 ##### Component Access
 
 You can access the component import itself via `suite.utils.component`. This may be helpful if you have a dynamic test suite that needs to find the component within the story, e.g.:

@@ -90,7 +90,9 @@ const renderStory = (story, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const mountStory = (story, config = {}) => {
-    return rawMount(generateStory(story), generateConfigForStory(story, config));
+    const wrapper = rawMount(generateStory(story), generateConfigForStory(story, config));
+
+    return extendWrapper(wrapper);
 };
 
 /**
@@ -104,7 +106,9 @@ const mountStory = (story, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const shallowMountStory = (story, config = {}) => {
-    return rawShallowMount(generateStory(story), generateConfigForStory(story, config));
+    const wrapper = rawShallowMount(generateStory(story), generateConfigForStory(story, config));
+
+    return extendWrapper(wrapper);
 };
 
 /**
@@ -275,6 +279,34 @@ const generateSuite = (suite) => {
         });
 
     return suiteObject;
+};
+
+/**
+ * Extend the vue test utils wrapper with additional functionality.
+ *
+ * @param {object} wrapper
+ */
+const extendWrapper = (wrapper) => {
+    addTestIdHelpers(wrapper);
+
+    return wrapper;
+};
+
+/**
+ * Add the wrapper util helpers for selecting via testId.
+ *
+ * @param {object} wrapper
+ */
+const addTestIdHelpers = (wrapper) => {
+    const selector = (id) => `[data-testid="${ id }"]`;
+
+    wrapper.findByTestId = function(id) {
+        return this.find(selector(id));
+    };
+
+    wrapper.findAllByTestId = function(id) {
+        return this.findAll(selector(id));
+    };
 };
 
 module.exports = {
