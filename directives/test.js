@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     /**
      * When the directive is inserted, add the attribute only if we're in a test environment.
      *
