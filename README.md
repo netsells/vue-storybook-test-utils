@@ -236,6 +236,52 @@ There is also a simple nuxt module to prevent this method erroring in production
 
 These data attributes will only render in test environments, i.e. in jest and storybook.
 
+##### Routes
+
+If your components/stories feature routes, you can provide these via the `router.routes` parameter on your story definitions. 
+
+Before this will work, you must mock the router in your setup file:
+
+```js
+import { mockRouter } from '@netsells/vue-storybook-test-utils';
+
+mockRouter({
+    // Any vue-router config options can be passed here
+});
+```
+
+You can then provide your routes within your stories:
+
+```js
+export default {
+    parameters: {
+        router: {
+            routes: [
+                {
+                    name: 'account',
+                    path: '/account',
+                },
+            ],
+        },
+    },
+};
+```
+
+You can also provide routes to specific stories if required:
+
+```js
+story.parameters = {
+    router: {
+        routes: [
+            {
+                name: 'account',
+                path: '/account',
+            },
+        ],
+    },
+};
+```
+
 ##### Component Access
 
 You can access the component import itself via `suite.utils.component`. This may be helpful if you have a dynamic test suite that needs to find the component within the story, e.g.:
@@ -267,7 +313,6 @@ const wrapper = suite.myComponent({
         // Use `Vue` as you would normally, e.g. `Vue.use`, `Vue.mixin`
     },
 });
-
 ```
 
 #### Misc Utilities

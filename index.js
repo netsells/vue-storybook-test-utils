@@ -2,9 +2,11 @@ const { render: rawRender } = require('@vue/server-test-utils');
 const { mount: rawMount, shallowMount: rawShallowMount, createLocalVue, config, ...rest } = require('@vue/test-utils');
 const Vue = require('vue');
 const Vuex = require('vuex');
+const VueRouter = require('vue-router');
 const merge = require('lodash.merge');
 
 let store;
+let routerConfig;
 
 /**
  * Generate a local vue instance for testing environment.
@@ -61,13 +63,27 @@ const generateConfig = ({ localVue, ...config }) => merge({
  *
  * @returns {object}
  */
-const generateConfigForStory = (story, { localVue, ...options }) => merge(generateConfig(options), {
-    propsData: {
-        ...story.args,
-        ...options.propsData,
-    },
-    localVue: makeLocalVue(localVue),
-});
+const generateConfigForStory = (story, { localVue, ...options }) => {
+    let router;
+
+    if (story.parameters && story.parameters.router && story.parameters.router.routes) {
+        router = createRouter();
+
+        router.addRoutes(story.parameters.router.routes);
+    }
+
+    return merge(generateConfig(options), {
+        propsData: {
+            ...story.args,
+            ...options.propsData,
+        },
+        router,
+        stubs: {
+            'nuxt-link': !router,
+        },
+        localVue: makeLocalVue(localVue),
+    });
+};
 
 /**
  * Render a story using `@vue/server-test-utils`.
@@ -213,6 +229,32 @@ const mockStore = (config = {}) => {
 };
 
 /**
+ * Mock a vue router instance.
+ *
+ * @param {object} config
+ */
+const mockRouter = (config = {}) => {
+    setupPlugins([VueRouter]);
+
+    routerConfig = {
+        mode: 'history',
+        base: decodeURI('/'),
+        linkActiveClass: 'nuxt-link-active',
+        linkExactActiveClass: 'nuxt-link-exact-active',
+        ...config
+    };
+};
+
+/**
+ * Create a router instance.
+ *
+ * @returns {object}
+ */
+const createRouter = () => {
+    return new VueRouter(routerConfig);
+}
+
+/**
  * Generate the test factory for the suite component.
  *
  * @param {object} suite
@@ -244,6 +286,7 @@ const generateComponentFactory = (suite) => {
 const generateStoryFactory = (suite, story) => {
     story.args = merge({}, suite.default.args, story.args);
     story.argTypes = merge({}, suite.default.argTypes, story.argTypes);
+    story.parameters = merge({}, suite.default.parameters, story.parameters);
 
     const storyFactory = (config = {}) => mountStory(story, config);
 
@@ -323,6 +366,7 @@ module.exports = {
     mockDirectives,
     mockComponents,
     mockStore,
+    mockRouter,
     setupPlugins,
     rawMount,
     rawRender,
