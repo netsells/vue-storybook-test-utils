@@ -64,25 +64,30 @@ const generateConfig = ({ localVue, ...config }) => merge({
  * @returns {object}
  */
 const generateConfigForStory = (story, { localVue, ...options }) => {
-    let router;
-
-    if (story.parameters && story.parameters.router && story.parameters.router.routes) {
-        router = createRouter();
-
-        router.addRoutes(story.parameters.router.routes);
-    }
-
-    return merge(generateConfig(options), {
+    const config = {
         propsData: {
             ...story.args,
             ...options.propsData,
         },
-        router,
-        stubs: {
-            'nuxt-link': !router,
-        },
         localVue: makeLocalVue(localVue),
-    });
+    };
+
+    if (
+        !options.router
+        && story.parameters
+        && story.parameters.router
+        && story.parameters.router.routes
+    ) {
+        config.router = createRouter();
+
+        config.router.addRoutes(story.parameters.router.routes);
+        config.stubs = {
+            ...config.stubs,
+            'nuxt-link': false,
+        };
+    }
+
+    return merge(generateConfig(options), config);
 };
 
 /**
