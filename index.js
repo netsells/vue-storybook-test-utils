@@ -46,14 +46,25 @@ const generateStory = (story) => story(story.args, {
  *
  * @returns {object}
  */
-const generateConfig = ({ localVue, ...config }) => merge({
-    stubs: {
-        icon: true,
-        'nuxt-link': true,
-    },
-    store,
-    localVue: makeLocalVue(localVue),
-}, config);
+const generateConfig = ({ localVue, ...config } = {}) => {
+    const generatedConfig = {
+        store,
+        localVue: makeLocalVue(localVue),
+    };
+
+    if (routerConfig) {
+        generatedConfig.router = createRouter();
+        generatedConfig.stubs = {
+            ...generatedConfig.stubs,
+            NuxtLink: {
+                name: 'nuxt-link',
+                extends: generatedConfig.localVue.component('RouterLink'),
+            },
+        };
+    }
+
+    return merge(generatedConfig, config);
+}
 
 /**
  * Generate the config for the story mounting methods.
@@ -63,31 +74,25 @@ const generateConfig = ({ localVue, ...config }) => merge({
  *
  * @returns {object}
  */
-const generateConfigForStory = (story, { localVue, ...options }) => {
+const generateConfigForStory = (story, options) => {
+    const generatedConfig = generateConfig(options);
+
     const config = {
         propsData: {
             ...story.args,
             ...options.propsData,
         },
-        localVue: makeLocalVue(localVue),
     };
 
     if (
         !options.router
         && story.parameters
         && story.parameters.router
-        && story.parameters.router.routes
     ) {
-        config.router = createRouter();
-
-        config.router.addRoutes(story.parameters.router.routes);
-        config.stubs = {
-            ...config.stubs,
-            'nuxt-link': false,
-        };
+        generatedConfig.router.addRoutes(story.parameters.router.routes || []);
     }
 
-    return merge(generateConfig(options), config);
+    return merge(generatedConfig, config);
 };
 
 /**
@@ -246,6 +251,7 @@ const mockRouter = (config = {}) => {
         base: decodeURI('/'),
         linkActiveClass: 'nuxt-link-active',
         linkExactActiveClass: 'nuxt-link-exact-active',
+        routes: [],
         ...config
     };
 };
@@ -268,7 +274,9 @@ const createRouter = () => {
  */
 const generateComponentFactory = (suite) => {
     const defaultFactoryConfig = {
-        propsData: suite.default.args || {},
+        propsData: {
+            ...suite.default.args,
+        },
     };
 
     const defaultFactory = (config = {}) => mount(suite.default.component, merge({}, defaultFactoryConfig, config));
