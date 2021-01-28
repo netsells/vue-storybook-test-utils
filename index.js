@@ -1,5 +1,12 @@
 const { render: rawRender } = require('@vue/server-test-utils');
-const { mount: rawMount, shallowMount: rawShallowMount, createLocalVue, config, ...rest } = require('@vue/test-utils');
+const {
+    mount: rawMount,
+    shallowMount: rawShallowMount,
+    createLocalVue,
+    config,
+    Wrapper,
+    ...rest
+} = require('@vue/test-utils');
 const Vue = require('vue');
 const Vuex = require('vuex');
 const VueRouter = require('vue-router');
@@ -116,9 +123,7 @@ const renderStory = (story, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const mountStory = (story, config = {}) => {
-    const wrapper = rawMount(generateStory(story), generateConfigForStory(story, config));
-
-    return extendWrapper(wrapper);
+    return rawMount(generateStory(story), generateConfigForStory(story, config));
 };
 
 /**
@@ -132,9 +137,7 @@ const mountStory = (story, config = {}) => {
  * @returns {Promise<Cheerio>}
  */
 const shallowMountStory = (story, config = {}) => {
-    const wrapper = rawShallowMount(generateStory(story), generateConfigForStory(story, config));
-
-    return extendWrapper(wrapper);
+    return rawShallowMount(generateStory(story), generateConfigForStory(story, config));
 };
 
 /**
@@ -339,31 +342,27 @@ const generateSuite = (suite) => {
 
 /**
  * Extend the vue test utils wrapper with additional functionality.
- *
- * @param {object} wrapper
  */
-const extendWrapper = (wrapper) => {
-    addTestIdHelpers(wrapper);
-
-    return wrapper;
+const extendWrapper = () => {
+    addTestIdHelpers();
 };
 
 /**
  * Add the wrapper util helpers for selecting via testId.
- *
- * @param {object} wrapper
  */
-const addTestIdHelpers = (wrapper) => {
+const addTestIdHelpers = () => {
     const selector = (id) => `[data-testid="${ id }"]`;
 
-    wrapper.findByTestId = function(id) {
+    Wrapper.prototype.findByTestId = function(id) {
         return this.find(selector(id));
-    };
+    }
 
-    wrapper.findAllByTestId = function(id) {
+    Wrapper.prototype.findAllByTestId = function(id) {
         return this.findAll(selector(id));
-    };
+    }
 };
+
+extendWrapper();
 
 module.exports = {
     generateSuite,
@@ -385,5 +384,6 @@ module.exports = {
     rawRender,
     rawShallowMount,
     config,
+    Wrapper,
     ...rest,
 };
