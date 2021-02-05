@@ -11,6 +11,7 @@ const Vue = require('vue');
 const Vuex = require('vuex');
 const VueRouter = require('vue-router');
 const merge = require('lodash.merge');
+const mergeWith = require('lodash.mergewith');
 
 let store;
 let routerConfig;
@@ -269,6 +270,36 @@ const createRouter = () => {
 }
 
 /**
+ * Merge strategy for overriding args.
+ * Default behaviour except arrays will overwrite completely instead of merging.
+ *
+ * @param {Array} objects
+ *
+ * @returns {object}
+ */
+const mergeStrategy = (...objects) => mergeWith({}, ...objects, (objValue, srcValue) => {
+    if (Array.isArray(objValue)) {
+        return srcValue;
+    }
+});
+
+/**
+ * Merge the default export and individual story data.
+ *
+ * @param {object} suite
+ * @param {object} story
+ *
+ * @returns {{args: object, argTypes: object, parameters: object}}
+ */
+const mergeStoryData = (suite, story) => {
+    const args = mergeStrategy(suite.default.args, story.args);
+    const argTypes = mergeStrategy(suite.default.argTypes, story.argTypes);
+    const parameters = mergeStrategy(suite.default.parameters, story.parameters);
+
+    return { args, argTypes, parameters };
+};
+
+/**
  * Generate the test factory for the suite component.
  *
  * @param {object} suite
@@ -300,9 +331,11 @@ const generateComponentFactory = (suite) => {
  * @returns {function}
  */
 const generateStoryFactory = (suite, story) => {
-    story.args = merge({}, suite.default.args, story.args);
-    story.argTypes = merge({}, suite.default.argTypes, story.argTypes);
-    story.parameters = merge({}, suite.default.parameters, story.parameters);
+    const { args, argTypes, parameters } = mergeStoryData(suite, story);
+
+    story.args = args;
+    story.argTypes = argTypes;
+    story.parameters = parameters;
 
     const storyFactory = (config = {}) => mountStory(story, config);
 

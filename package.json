@@ -6,7 +6,8 @@
     "dependencies": {
         "@vue/server-test-utils": "^1.1.2",
         "@vue/test-utils": "^1.1.2",
-        "lodash.merge": "^4.6.2"
+        "lodash.merge": "^4.6.2",
+        "lodash.mergewith": "^4.6.2"
     },
     "devDependencies": {
         "@netsells/eslint-config": "^5.0.0"
