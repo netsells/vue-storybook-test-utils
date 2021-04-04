@@ -284,13 +284,13 @@ story.parameters = {
 
 ##### Component Access
 
-You can access the component import itself via `suite.utils.component`. This may be helpful if you have a dynamic test suite that needs to find the component within the story, e.g.:
+You can access the component import itself via `suite.utils.component`. You can also use `wrapper.getComponent()` to retrieve the main component you're testing. This may be helpful if you have a dynamic test suite that needs to find the component within the story, e.g.:
 
 ```js
 describe('when the input is updated', () => {
     test('the new value is emitted', async () => {
         const wrapper = suite.textInput();
-        const component = wrapper.findComponent(suite.utils.component);
+        const component = wrapper.getComponent();
         const input = wrapper.find('input');
 
         await input.setValue('New value');

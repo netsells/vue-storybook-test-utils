@@ -370,6 +370,10 @@ const generateSuite = (suite) => {
             suiteObject[name] = generateStoryFactory(suite, story);
         });
 
+    Wrapper.prototype.getComponent = function() {
+        return this.findComponent(suite.default.component);
+    };
+
     return suiteObject;
 };
 
@@ -388,11 +392,11 @@ const addTestIdHelpers = () => {
 
     Wrapper.prototype.findByTestId = function(id) {
         return this.find(selector(id));
-    }
+    };
 
     Wrapper.prototype.findAllByTestId = function(id) {
         return this.findAll(selector(id));
-    }
+    };
 };
 
 extendWrapper();
