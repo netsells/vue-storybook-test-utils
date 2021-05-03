@@ -72,10 +72,10 @@
   resolved "https://npm.netsells.tools/@types%2fnode/-/node-14.14.2.tgz#d25295f9e4ca5989a2c610754dc02a9721235eeb"
   integrity sha512-jeYJU2kl7hL9U5xuI/BhKPZ4vqGM/OmK6whiFAXVhlstzZhVamWhDSmHyGLIp+RVyuF9/d0dqr2P85aFj4BvJg==
 
-"@vue/server-test-utils@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@vue/server-test-utils/-/server-test-utils-1.1.4.tgz#5053245449635831e1bfd9893491545db722b3ba"
-  integrity sha512-sMT6FFL7E1L8UXmf25URFTA290+ADQ/DOC3pt5Kqgq1UzgIbkKfR3XXtkyMCvbgPaQXjySnlDdDQaEeD5lDV2g==
+"@vue/server-test-utils@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@vue/server-test-utils/-/server-test-utils-1.2.0.tgz#7c5f1e99a1e8a45ff7c5ed9a3ea836e06e48be17"
+  integrity sha512-G9JdAl6kJAuZpRVx/7ATvhS4Eu5HyCHVIcpabtrm0Rmlcuc6EKSvzEYLwF8iLOWjl4KBWgG0l4aDZEL7UzuTbw==
   dependencies:
     "@types/cheerio" "^0.22.10"
     cheerio "^1.0.0-rc.2"
