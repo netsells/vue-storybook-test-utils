@@ -5,6 +5,7 @@ const {
     createLocalVue,
     config,
     Wrapper,
+    WrapperArray,
     ...rest
 } = require('@vue/test-utils');
 const Vue = require('vue');
@@ -396,6 +397,20 @@ const addTestIdHelpers = () => {
 
     Wrapper.prototype.findAllByTestId = function(id) {
         return this.findAll(selector(id));
+    };
+
+    Wrapper.prototype.findComponentByTestId = function(component, id) {
+        return this.findAllComponents(component)
+            .wrappers
+            .find((w) => w.attributes('data-testid') === id);
+    };
+
+    Wrapper.prototype.findAllComponentsByTestId = function(component, id) {
+        const wrappers = this.findAllComponents(component)
+            .wrappers
+            .filter((w) => w.attributes('data-testid') === id);
+
+        return new WrapperArray(wrappers);
     };
 };
 

@@ -12,9 +12,7 @@ Most of your test composition and variants (e.g. props, slots) is already setup 
 $ yarn add -D @netsells/vue-storybook-test-utils
 ``` 
 
-## Usage
-
-### Setup
+## Setup
 
 Ensure your project has a jest config, and create a `setupFilesAfterEnv` file, for example:
 
@@ -79,7 +77,7 @@ setupPlugins([
 ]);
 ```
 
-### Testing
+## Testing
 
 Take the following story:
 
@@ -175,7 +173,7 @@ describe('TextInput', () => {
 });
 ```
 
-##### TestId
+### TestId
 
 Sometimes it's helpful to add a specific attribute to your tests to quickly and easily access your testable elements, without having to rely on specific markup. For this we recommend adding a `data-testid="someKey"` to your testable elements, and using the `findByTestId` helper. For example:
 
@@ -201,15 +199,79 @@ With the introduction of the `data-testid` attribute we're able to avoid this pr
 const listItem = wrapper.find('[data-testid="testableListItem"]');
 ```
 
-This is a bit awkward to type out, so we can instead use the provided helper:
+For further reading on this method, check out this [article by Kent C. Dodds](https://kentcdodds.com/blog/making-your-ui-tests-resilient-to-change).
+
+#### `findByTestId`
+
+Typing out the full accessor path is a lot of duplication, so we can instead use the provided helper:
 
 ```js
 const listItem = wrapper.findByTestId('testableListItem');
 ```
 
+#### `findAllByTestId`
+
 You can also use the `findAllByTestId` method for finding multiple testIds.
 
-For further reading on this method, check out this [article by Kent C. Dodds](https://kentcdodds.com/blog/making-your-ui-tests-resilient-to-change).
+```js
+const listItems = wrapper.findAllByTestId('testableListItem')
+```
+
+#### `findComponentByTestId`
+
+If you have multiple of the same component and can't easily target it with a `findComponent`, you can use the `findComponentByTestId` method to do this. For example:
+
+```vue
+<my-component data-testid="componentOne" />
+<my-component data-testid="componentTwo" />
+<my-component data-testid="componentThree" />
+
+<my-component
+    v-for="i in 5"
+    data-testid="repeatedComponents"
+/>
+```
+
+You can differentiate and access the individual components using the following:
+
+```js
+// Returns a single wrapper
+const componentOne = wrapper.findComponentByTestId({ 
+    name: 'my-component', 
+}, 'componentOne'); 
+// Returns a single wrapper
+const componentTwo = wrapper.findComponentByTestId({ 
+    name: 'my-component',
+}, 'componentTwo');
+```
+
+Doing the above allows you to easily assert that the element you want to access is the correct component as well as ensuring it's the correct individual component you need to access. 
+
+#### `findAllComponentsByTestId`
+
+If you need to access multiple components, for example to access a repeated collection, you can use this helper to return a wrapper array.
+
+```vue
+<my-component data-testid="componentOne" />
+<my-component data-testid="componentTwo" />
+<my-component data-testid="componentThree" />
+
+<my-component
+    v-for="i in 5"
+    data-testid="repeatedComponents"
+/>
+```
+
+You can differentiate and access the collection of components using the following:
+
+```js
+// Returns a wrapper array
+const repeatedComponents = wrapper.findAllComponentsByTestId({ 
+    name: 'my-component', 
+}, 'repeatedComponents');
+```
+
+#### `v-test` directive
 
 To make this easier in your template, you can also make use of the provided `v-test` directive. Simply pull in and register the directive like so: 
 
@@ -236,7 +298,7 @@ There is also a simple nuxt module to prevent this method erroring in production
 
 These data attributes will only render in test environments, i.e. in jest and storybook.
 
-##### Routes
+### Routes
 
 If your components/stories feature routes, you can provide these via the `router.routes` parameter on your story definitions. 
 
@@ -282,7 +344,7 @@ story.parameters = {
 };
 ```
 
-##### Component Access
+### Component Access
 
 You can access the component import itself via `suite.utils.component`. You can also use `wrapper.getComponent()` to retrieve the main component you're testing. This may be helpful if you have a dynamic test suite that needs to find the component within the story, e.g.:
 
@@ -303,7 +365,7 @@ describe('when the input is updated', () => {
 
 Similarly, the entire `default` export of your story is available as `suite.utils.defaultExport` if required.
 
-#### `localVue`
+### `localVue`
 
 Unlike the `localVue` property available on `@vue/test-utils`, you should provide a callback rather than an instance of your own. This reduces manual boilerplate and makes it more familiar to set up. The first argument of the callback is a Vue instance localised to your test. You should use this to setup any Vuex modules you may require in your tests.
 
@@ -315,12 +377,12 @@ const wrapper = suite.myComponent({
 });
 ```
 
-#### Misc Utilities
+### Misc Utilities
 
-##### `waitForAnimationFrame`
+#### `waitForAnimationFrame`
 
 Returns a promise that resolves after the current repaint to ensure any animations have completed.
 
-##### `@vue/test-utils` raw functions
+#### `@vue/test-utils` raw functions
 
-We also pass through all the `@vue/test-utils` methods as they are in the original package, with the exception of `mount` and `shallowMount`, as these are overriden with additional functionality from this module. Should you require access to these methods, they can be called with the `raw` prefix, e.g. `rawMount` and `rawShallowMount`.
+We also pass through all the `@vue/test-utils` methods as they are in the original package, with the exception of `mount` and `shallowMount`, as these are overridden with additional functionality from this module. Should you require access to these methods, they can be called with the `raw` prefix, e.g. `rawMount` and `rawShallowMount`.
