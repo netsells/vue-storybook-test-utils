@@ -298,7 +298,7 @@ There is also a simple nuxt module to prevent this method erroring in production
 
 These data attributes will only render in test environments, i.e. in jest and storybook.
 
-### Routes
+## Routes
 
 If your components/stories feature routes, you can provide these via the `router.routes` parameter on your story definitions. 
 
@@ -344,7 +344,7 @@ story.parameters = {
 };
 ```
 
-### Component Access
+## Component Access
 
 You can access the component import itself via `suite.utils.component`. You can also use `wrapper.getComponent()` to retrieve the main component you're testing. This may be helpful if you have a dynamic test suite that needs to find the component within the story, e.g.:
 
@@ -365,7 +365,7 @@ describe('when the input is updated', () => {
 
 Similarly, the entire `default` export of your story is available as `suite.utils.defaultExport` if required.
 
-### `localVue`
+## `localVue`
 
 Unlike the `localVue` property available on `@vue/test-utils`, you should provide a callback rather than an instance of your own. This reduces manual boilerplate and makes it more familiar to set up. The first argument of the callback is a Vue instance localised to your test. You should use this to setup any Vuex modules you may require in your tests.
 
@@ -377,12 +377,12 @@ const wrapper = suite.myComponent({
 });
 ```
 
-### Misc Utilities
+## Misc Utilities
 
-#### `waitForAnimationFrame`
+### `waitForAnimationFrame`
 
 Returns a promise that resolves after the current repaint to ensure any animations have completed.
 
-#### `@vue/test-utils` raw functions
+### `@vue/test-utils` raw functions
 
 We also pass through all the `@vue/test-utils` methods as they are in the original package, with the exception of `mount` and `shallowMount`, as these are overridden with additional functionality from this module. Should you require access to these methods, they can be called with the `raw` prefix, e.g. `rawMount` and `rawShallowMount`.
