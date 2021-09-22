@@ -6,6 +6,7 @@ const {
     config,
     Wrapper,
     WrapperArray,
+    ErrorWrapper,
     ...rest
 } = require('@vue/test-utils');
 const Vue = require('vue');
@@ -402,7 +403,8 @@ const addTestIdHelpers = () => {
     Wrapper.prototype.findComponentByTestId = function(component, id) {
         return this.findAllComponents(component)
             .wrappers
-            .find((w) => w.attributes('data-testid') === id);
+            .find((w) => w.attributes('data-testid') === id)
+            || new ErrorWrapper(selector(id));
     };
 
     Wrapper.prototype.findAllComponentsByTestId = function(component, id) {
