@@ -58,7 +58,7 @@ const generateStory = (story) => story(story.args, {
  */
 const generateConfig = ({ localVue, ...config } = {}) => {
     const generatedConfig = {
-        store,
+        store: store(),
         localVue: makeLocalVue(localVue),
     };
 
@@ -241,7 +241,7 @@ const setupPlugins = (plugins = []) => plugins.forEach((plugin) => Vue.use(plugi
 const mockStore = (config = {}) => {
     setupPlugins([Vuex]);
 
-    store = new Vuex.Store(config);
+    store = () => new Vuex.Store(config);
 };
 
 /**
