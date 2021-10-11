@@ -53,12 +53,16 @@ const generateStory = (story) => story(story.args, {
  * Generate the config for the mounting methods.
  *
  * @param {object} config
+ * @param {object} config.config
+ * @param {Function} config.localVue
  *
  * @returns {object}
  */
 const generateConfig = ({ localVue, ...config } = {}) => {
     const generatedConfig = {
-        store: store(),
+        store: store
+            ? store()
+            : undefined,
         localVue: makeLocalVue(localVue),
     };
 
