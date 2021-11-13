@@ -3,7 +3,7 @@ const {
     mount: rawMount,
     shallowMount: rawShallowMount,
     createLocalVue,
-    config,
+    config: globalConfig,
     Wrapper,
     WrapperArray,
     ErrorWrapper,
@@ -106,7 +106,7 @@ const generateConfigForStory = (story, options) => {
         generatedConfig.router.addRoutes(story.parameters.router.routes || []);
     }
 
-    return merge(generatedConfig, config);
+    return merge({}, globalConfig, generatedConfig, config);
 };
 
 /**
@@ -197,7 +197,7 @@ const waitForAnimationFrame = () => new Promise((resolve) => requestAnimationFra
  *
  * @returns {object}
  */
-const setStubs = (stubs = {}) => merge(config.stubs, stubs);
+const setStubs = (stubs = {}) => merge(globalConfig.stubs, stubs);
 
 /**
  * Set global mocks within the test utils package.
@@ -206,7 +206,7 @@ const setStubs = (stubs = {}) => merge(config.stubs, stubs);
  *
  * @returns {object}
  */
-const setMocks = (mocks = {}) => merge(config.mocks, mocks);
+const setMocks = (mocks = {}) => merge(globalConfig.mocks, mocks);
 
 /**
  * Mock vue directives.
@@ -441,7 +441,7 @@ module.exports = {
     rawMount,
     rawRender,
     rawShallowMount,
-    config,
+    config: globalConfig,
     Wrapper,
     ...rest,
 };
