@@ -10,7 +10,7 @@
         "lodash.mergewith": "^4.6.2"
     },
     "devDependencies": {
-        "@netsells/eslint-config": "^5.1.0"
+        "@netsells/eslint-config": "^6.0.0"
     },
     "repository": {
         "url": "https://github.com/netsells/vue-storybook-test-utils"
