@@ -10,8 +10,6 @@ const {
     ...rest
 } = require('@vue/test-utils');
 const Vue = require('vue');
-const Vuex = require('vuex');
-const VueRouter = require('vue-router');
 const merge = require('lodash.merge');
 const mergeWith = require('lodash.mergewith');
 
@@ -243,6 +241,8 @@ const setupPlugins = (plugins = []) => plugins.forEach((plugin) => Vue.use(plugi
  * @param {object} config
  */
 const mockStore = (config = {}) => {
+    const Vuex = require('vuex');
+
     setupPlugins([Vuex]);
 
     store = () => new Vuex.Store(config);
@@ -254,6 +254,8 @@ const mockStore = (config = {}) => {
  * @param {object} config
  */
 const mockRouter = (config = {}) => {
+    const VueRouter = require('vue-router');
+
     setupPlugins([VueRouter]);
 
     routerConfig = {
@@ -272,6 +274,8 @@ const mockRouter = (config = {}) => {
  * @returns {object}
  */
 const createRouter = () => {
+    const VueRouter = require('vue-router');
+
     return new VueRouter(routerConfig);
 }
 
