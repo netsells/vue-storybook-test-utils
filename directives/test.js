@@ -7,7 +7,7 @@ module.exports = {
      * @param {string} context.arg
      */
     inserted(el, { arg }) {
-        if (!process.env.JEST_WORKER_ID || (typeof window !== 'undefined' && window.STORYBOOK_ENV)) {
+        if (typeof process === 'undefined' || !process.env.JEST_WORKER_ID || (typeof window !== 'undefined' && window.STORYBOOK_ENV)) {
             return;
         }
 
