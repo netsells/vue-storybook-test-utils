@@ -1,4 +1,6 @@
-import Vue from 'vue';
+import { defineNuxtPlugin } from 'nuxt/app';
 
-// Noop the directive
-Vue.directive('test', {});
+export default defineNuxtPlugin((nuxtApp) => {
+    nuxtApp.vueApp
+        .directive('test', {});
+});

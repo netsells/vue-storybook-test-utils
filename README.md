@@ -2,6 +2,15 @@
 
 This package provides wrappers around `@vue/test-utils` for easier integration with storybook-based tests.
 
+Note: This package works with the following stack:
+- Nuxt 3
+- Vite
+- `@vue/test-utils`
+- Vitest
+- Storybook 7+
+
+For Nuxt 2 compatability see versions `1.x`.
+
 ## Why?
 
 Most of your test composition and variants (e.g. props, slots) is already setup as part of storybook for use in component-first development and Visual Regression Testing process. It makes little sense to do this setup twice. This module allows you to pass your stories directly to the `@vue/test-utils` package and have the wrappers automatically generated with your provided props and story markup.
@@ -92,7 +101,7 @@ Take the following story:
 
 <details>
 <summary>TextInput.stories.js</summary>
-  
+
 ```js
 import TextInput from './TextInput';
 
@@ -254,7 +263,7 @@ const componentTwo = wrapper.findComponentByTestId({
 }, 'componentTwo');
 ```
 
-Doing the above allows you to easily assert that the element you want to access is the correct component as well as ensuring it's the correct individual component you need to access. 
+Doing the above allows you to easily assert that the element you want to access is the correct component as well as ensuring it's the correct individual component you need to access.
 
 #### `findAllComponentsByTestId`
 
@@ -282,7 +291,7 @@ const repeatedComponents = wrapper.findAllComponentsByTestId({
 
 #### `v-test` directive
 
-To make this easier in your template, you can also make use of the provided `v-test` directive. Simply pull in and register the directive like so: 
+To make this easier in your template, you can also make use of the provided `v-test` directive. Simply pull in and register the directive like so:
 
 ```js
 // setup.js
@@ -309,7 +318,7 @@ These data attributes will only render in test environments, i.e. in jest and st
 
 ## Routes
 
-If your components/stories feature routes, you can provide these via the `router.routes` parameter on your story definitions. 
+If your components/stories feature routes, you can provide these via the `router.routes` parameter on your story definitions.
 
 Before this will work, you must mock the router in your setup file:
 

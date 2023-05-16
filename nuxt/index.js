@@ -1,15 +1,17 @@
-import { resolve } from 'path';
+import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit';
 
-export default function VueTestUtilsModule(moduleOptions = {}) {
-    const options = {
-        ...moduleOptions,
-    };
+export default defineNuxtModule({
+    meta: {
+        name: '@netsells/vue-storybook-test-utils',
+        compatibility: {
+            // Semver version of supported nuxt versions
+            nuxt: '^3.0.0',
+        },
+    },
+    async setup() {
+        // Create resolver to resolve relative paths
+        const { resolve } = createResolver(import.meta.url)
 
-    const { dst } = this.addTemplate({
-        src: resolve(__dirname, './plugin.js'),
-        fileName: './vue-test-utils/plugin.js',
-        options,
-    });
-
-    this.options.plugins.push(resolve(this.options.buildDir, dst));
-}
+        addPlugin(resolve('./plugin'))
+    },
+});
