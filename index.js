@@ -2,7 +2,7 @@ import {
     config as globalConfig,
     createWrapperError,
 } from '@vue/test-utils';
-import SuiteFactory from './lib/SuiteFactory';
+import SuiteFactory from './lib/SuiteFactory.js';
 import { RouterLink } from 'vue-router';
 import merge from 'lodash.merge';
 
