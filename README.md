@@ -6,6 +6,15 @@ This package provides wrappers around `@vue/test-utils` for easier integration w
 
 Most of your test composition and variants (e.g. props, slots) is already setup as part of storybook for use in component-first development and Visual Regression Testing process. It makes little sense to do this setup twice. This module allows you to pass your stories directly to the `@vue/test-utils` package and have the wrappers automatically generated with your provided props and story markup.
 
+Note: Version `1.x` of this package works with the following stack:
+
+- Nuxt 2
+- Storybook 6
+- Webpack
+- Jest
+
+For Nuxt 3 see version `2.x` or greater
+
 ## Installation
 
 ```sh
